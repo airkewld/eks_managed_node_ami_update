@@ -40,3 +40,5 @@ try:
       print(group_status["nodegroupName"] + " is " + status)
 except KeyError:
     logging.error("Missing required CLUSTER_NAME environment variable")
+except:
+    logging.error("Cluster name did not match environment credentials.")
