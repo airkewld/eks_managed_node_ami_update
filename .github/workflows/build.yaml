@@ -1,0 +1,68 @@
+name: build
+
+on:
+  pull_request:
+    branches:
+      - main
+  schedule:
+    # run every monday
+    - cron:  '0 */48 * * *'
+
+jobs:
+  dockerfile_best_practices:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - run: |
+             docker run --rm -i -v $(pwd):/tmp airkewld/dockerfile-opa /tmp/Dockerfile
+
+  build_image:
+    runs-on: ubuntu-latest
+    needs: [dockerfile_best_practices]
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: build container image
+        run: |
+            docker build . -t ttl.sh/airkewld/eks-ami-updater:48h
+            docker save ttl.sh/airkewld/eks-ami-updater:48h > eks-ami-updater.tar
+
+      - name: store image artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: eks-ami-updater.tar
+          path: ./eks-ami-updater.tar
+          retention-days: 1
+
+  scan_image:
+    runs-on: ubuntu-latest
+    container:
+      image: aquasec/trivy
+    needs: [build_image]
+    steps:
+      - name: download image artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: eks-ami-updater.tar
+          path: ./
+
+      - name: scan image
+        run: |
+            trivy image --ignore-unfixed -s CRITICAL -s HIGH -q --input eks-ami-updater.tar
+
+  push:
+    runs-on: ubuntu-latest
+    needs: [scan_image]
+    steps:
+      - name: download image artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: eks-ami-updater.tar
+          path: ./
+
+      - name: push container image
+        run: |
+            docker load -i eks-ami-updater.tar
+            docker push ttl.sh/airkewld/eks-ami-updater:48h
