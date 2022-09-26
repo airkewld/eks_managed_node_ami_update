@@ -37,7 +37,7 @@ eks_client = boto3.client('eks')
 try:
   nodegroups = eks_client.list_nodegroups(clusterName=CLUSTER)["nodegroups"]
 
-  ## Loop tough the nodegroups of the eks cluster and upgrade one at a time while outputting the status of the upgrade
+  ## Loop trough the nodegroups of the eks cluster and upgrade one at a time while outputting the status of the upgrade
   for group in nodegroups:
       status = eks_client.describe_nodegroup(clusterName=CLUSTER,nodegroupName=group)["nodegroup"]["status"]
       if status == "ACTIVE":
@@ -48,7 +48,7 @@ try:
         logging.info(group + " is " + status)
         status = eks_client.describe_nodegroup(clusterName=CLUSTER,nodegroupName=group)["nodegroup"]["status"]
 
-  ## Loop tough each node and output its status
+  ## Loop trough each node and output its status
   for group in nodegroups:
       status = eks_client.describe_nodegroup(clusterName=CLUSTER,nodegroupName=group)["nodegroup"]["status"]
       logging.info(group + " is " + status)
