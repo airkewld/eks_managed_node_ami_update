@@ -10,18 +10,21 @@ logging.basicConfig(format=FORMAT,level=logging.INFO)
 try:
   AWS_DEFAULT_REGION = os.environ['AWS_DEFAULT_REGION']
 except KeyError:
-  logging.error("Missing AWS_DEFAULT_REGION environment variable")
-  exit(1)
+  if os.getpid() == 1:
+    logging.error("Missing AWS_DEFAULT_REGION environment variable")
+    exit(1)
 try:
   AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
 except KeyError:
-  logging.error("Partial credentials found in env, missing: AWS_ACCESS_KEY_ID")
-  exit(1)
+  if os.getpid() == 1:
+    logging.error("Partial credentials found in env, missing: AWS_ACCESS_KEY_ID")
+    exit(1)
 try:
   AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
 except KeyError:
-  logging.error("Partial credentials found in env, missing: AWS_SECRET_ACCESS_KEY")
-  exit(1)
+  if os.getpid() == 1:
+    logging.error("Partial credentials found in env, missing: AWS_SECRET_ACCESS_KEY")
+    exit(1)
 try:
   CLUSTER = os.environ['CLUSTER_NAME']
 except KeyError:
