@@ -42,7 +42,7 @@ try:
       status = eks_client.describe_nodegroup(clusterName=CLUSTER,nodegroupName=group)["nodegroup"]["status"]
       if status == "ACTIVE":
         logging.info(group + " is " + status)
-        # update_vendor_registry = eks_client.update_nodegroup_version(clusterName=CLUSTER,nodegroupName=group,force=True)
+        update_vendor_registry = eks_client.update_nodegroup_version(clusterName=CLUSTER,nodegroupName=group,force=True)
       status = eks_client.describe_nodegroup(clusterName=CLUSTER,nodegroupName=group)["nodegroup"]["status"]
       while status != "ACTIVE":
         status = eks_client.describe_nodegroup(clusterName=CLUSTER,nodegroupName=group)["nodegroup"]["status"]
