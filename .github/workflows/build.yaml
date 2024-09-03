@@ -43,7 +43,7 @@ jobs:
     needs: [build_image]
     steps:
       - name: download image artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
         with:
           name: eks-ami-updater.tar
           path: ./
@@ -57,7 +57,7 @@ jobs:
     needs: [scan_image]
     steps:
       - name: download image artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
         with:
           name: eks-ami-updater.tar
           path: ./
